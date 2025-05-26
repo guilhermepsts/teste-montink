@@ -4,7 +4,7 @@ function ProductPage() {
 	const product = {
 		name: 'Tênis Montink',
 		price: 299.9,
-		sizes: ['37', '38', '39', '40', '41'],
+		sizes: ['37', '38', '39', '40', '41', '42'],
 		colors: [
 			{ name: 'Black', hex: '#000000' },
 			{ name: 'Blue', hex: '#1E90FF' },
@@ -24,7 +24,7 @@ function ProductPage() {
 	};
 
 	return (
-		<div className="p-10 justify-items-center">
+		<div className="bg-[#F5f5f5] font-montserrat">
 			<ProductGallery product={product} />
 		</div>
 	);

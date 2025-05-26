@@ -5,8 +5,10 @@ import ImageGallery from './ImageGallery';
 import SizeSelector from './SizeSelector';
 import Description from './Description';
 import CepVerifier from './CEPVerifier';
+import Header from './Header';
+import Button from './Button';
 
-export default function ProductGallery({ product }) {
+function ProductGallery({ product }) {
 	const [selectedColor, setSelectedColor] = useState(product.colors[0].name);
 	const [selectedImage, setSelectedImage] = useState(
 		product.imagesByColor[product.colors[0].name][0],
@@ -25,28 +27,33 @@ export default function ProductGallery({ product }) {
 	};
 
 	return (
-		<div className="gap-4 grid grid-cols-2">
-			<ImageGallery
-				images={images}
-				selectedImage={selectedImage}
-				onImageSelect={setSelectedImage}
-			/>
+		<div className="grid place-items-center h-screen">
+			<Header />
 
-			<div className="space-y-8">
-				<Description product={product} />
-				<ColorSelector
-					colors={product.colors}
-					selectedColor={selectedColor}
-					onColorChange={handleColorChange}
+			<div className="gap-4 grid grid-cols-2 p-10 justify-items-center">
+				<ImageGallery
+					images={images}
+					selectedImage={selectedImage}
+					onImageSelect={setSelectedImage}
 				/>
-				<SizeSelector
-					sizes={product.sizes}
-					selectedSize={selectedSize}
-					onSizeChange={handleSizeChange}
-				/>
-
-				<CepVerifier />
+				<div className="space-y-8">
+					<Description product={product} />
+					<ColorSelector
+						colors={product.colors}
+						selectedColor={selectedColor}
+						onColorChange={handleColorChange}
+					/>
+					<SizeSelector
+						sizes={product.sizes}
+						selectedSize={selectedSize}
+						onSizeChange={handleSizeChange}
+					/>
+					<Button />
+					<CepVerifier />
+				</div>
 			</div>
 		</div>
 	);
 }
+
+export default ProductGallery;

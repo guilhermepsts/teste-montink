@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-export default function ImageGallery({ images, selectedImage, onImageSelect }) {
+function ImageGallery({ images, selectedImage, onImageSelect }) {
 	return (
 		<div>
 			<img
@@ -24,3 +24,4 @@ export default function ImageGallery({ images, selectedImage, onImageSelect }) {
 		</div>
 	);
 }
+export default ImageGallery;

@@ -1,26 +1,39 @@
 /* eslint-disable react/prop-types */
-export default function ColorSelector({
-	colors,
-	selectedColor,
-	onColorChange,
-}) {
+import { useEffect, useState } from 'react';
+import { saveWithExpiry, loadWithExpiry } from '/src/utils/storage.js';
+
+function ColorSelector({ colors, onColorChange }) {
+	const [selectedColor, setSelectedColor] = useState(() => {
+		return loadWithExpiry('selectedColor') || colors[0].name;
+	});
+
+	useEffect(() => {
+		saveWithExpiry('selectedColor', selectedColor);
+		if (onColorChange) {
+			onColorChange(selectedColor);
+		}
+	}, [selectedColor]);
+
 	return (
 		<div className="flex gap-4 items-center">
 			{colors.map((color) => (
 				<div
 					key={color.name}
-					onClick={() => onColorChange(color.name)}
-					className={`flex items-center gap-2 cursor-pointer ${
-						selectedColor === color.name ? 'font-semibold' : 'text-gray-600'
-					}`}
+					onClick={() => setSelectedColor(color.name)}
+					className="cursor-pointer"
 				>
 					<div
-						className="w-5 h-5 rounded-full border"
-						style={{ backgroundColor: color.hex }}
+						className="w-8 h-8 rounded-full border-2 transition-all duration-200"
+						style={{
+							backgroundColor: color.hex,
+							borderColor:
+								selectedColor === color.name ? 'green' : 'transparent',
+						}}
 					/>
-					<span>{color.name}</span>
 				</div>
 			))}
 		</div>
 	);
 }
+
+export default ColorSelector;

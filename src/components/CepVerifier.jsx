@@ -1,10 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { saveWithExpiry, loadWithExpiry } from '/src/utils/storage.js';
 
-export default function CepVerifier() {
+function CepVerifier() {
 	const [cep, setCep] = useState('');
 	const [address, setAddress] = useState(null);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		const savedAddress = loadWithExpiry('cepAddress');
+		const savedCep = loadWithExpiry('cepValue');
+
+		if (savedAddress && savedCep) {
+			setAddress(savedAddress);
+			setCep(savedCep);
+		}
+	}, []);
 
 	const handleChange = (e) => {
 		const onlyNumbers = e.target.value.replace(/\D/g, '');
@@ -13,7 +24,7 @@ export default function CepVerifier() {
 
 	const handleSearch = async () => {
 		if (cep.length !== 8) {
-			setError('CEP Precisa ter 8 dígitos');
+			setError('CEP precisa ter 8 dígitos');
 			setAddress(null);
 			return;
 		}
@@ -27,14 +38,15 @@ export default function CepVerifier() {
 			const data = await response.json();
 
 			if (data.erro) {
-				setError('CEP Não encontrado!');
+				setError('CEP não encontrado!');
 				setAddress(null);
 			} else {
 				setAddress(data);
-				setError(null);
+				saveWithExpiry('cepAddress', data);
+				saveWithExpiry('cepValue', cep);
 			}
 		} catch {
-			setError('Error fetching data');
+			setError('Erro ao buscar o CEP');
 			setAddress(null);
 		} finally {
 			setLoading(false);
@@ -42,45 +54,41 @@ export default function CepVerifier() {
 	};
 
 	return (
-		<div className="max-w-sm p-4 border rounded-md shadow-sm">
-			<label htmlFor="cep" className="block mb-1 font-medium">
-				Digite o CEP:
-			</label>
-			<input
-				id="cep"
-				type="text"
-				value={cep}
-				onChange={handleChange}
-				maxLength={8}
-				placeholder="Ex: 01001000"
-				className="w-full p-2 border rounded-md mb-2"
-			/>
-			<button
-				onClick={handleSearch}
-				disabled={loading}
-				className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-			>
-				{loading ? 'Procurando...' : 'Verificar CEP'}
-			</button>
+		<div className="max-w-sm p-4 border rounded-md shadow-sm bg-white flex flex-col gap-4">
+			<div className="flex gap-2">
+				<input
+					type="text"
+					value={cep}
+					onChange={handleChange}
+					placeholder="Digite o CEP"
+					className="border px-4 py-2 rounded w-full"
+					maxLength={8}
+				/>
+				<button
+					onClick={handleSearch}
+					className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition"
+				>
+					Verificar
+				</button>
+			</div>
 
-			{error && <p className="mt-2 text-red-600">{error}</p>}
-
+			{loading && <p className="text-gray-600">Buscando...</p>}
+			{error && <p className="text-red-600">{error}</p>}
 			{address && (
-				<div className="mt-4 bg-gray-50 p-3 rounded-md border">
+				<div className="bg-gray-100 p-4 rounded">
 					<p>
-						<strong>Endereço:</strong> {address.logradouro}
+						<strong>Rua:</strong> {address.logradouro}
 					</p>
 					<p>
 						<strong>Bairro:</strong> {address.bairro}
 					</p>
 					<p>
-						<strong>Cidade/Estado:</strong> {address.localidade} / {address.uf}
-					</p>
-					<p>
-						<strong>CEP:</strong> {address.cep}
+						<strong>Cidade:</strong> {address.localidade} - {address.uf}
 					</p>
 				</div>
 			)}
 		</div>
 	);
 }
+
+export default CepVerifier;

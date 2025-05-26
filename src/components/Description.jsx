@@ -4,9 +4,9 @@ function Description({ product }) {
 		<div>
 			<h1 className="text-2xl font-bold">{product.name}</h1>
 			<p className="text-lg text-gray-700">
-				{product.price.toLocaleString('en-US', {
+				{product.price.toLocaleString('pt-BR', {
 					style: 'currency',
-					currency: 'USD',
+					currency: 'BRL',
 				})}
 			</p>
 		</div>
