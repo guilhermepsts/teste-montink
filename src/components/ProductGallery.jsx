@@ -4,7 +4,7 @@ import ColorSelector from './ColorSelector';
 import ImageGallery from './ImageGallery';
 import SizeSelector from './SizeSelector';
 import Description from './Description';
-import CepVerifier from './CEPVerifier';
+import CepVerifier from './CepVerifier';
 import Header from './Header';
 import Button from './Button';
 
